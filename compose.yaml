@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+ database:
+   image: mysql
+   environment:
+     MYSQL_DATABASE: mini_project
+     MYSQL_ROOT_PASSWORD: 123qwe!@#
+     MYSQL_USER: admin
+     MYSQL_PASSWORD: 123qwe!@#
+   ports:
+     - 3306:3306
