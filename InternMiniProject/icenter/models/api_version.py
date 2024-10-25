@@ -1,8 +1,5 @@
 from django.db import models
-
-
-class Api(models.Model):
-    code = models.CharField(max_length=69, unique=True)
+from icenter.models import Api
 
 
 class ApiVersion(models.Model):
