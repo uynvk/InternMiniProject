@@ -1,6 +1,7 @@
-from django.urls import path
-from hire_center.views.company import company_register
+from rest_framework.routers import SimpleRouter
 
-urlpatterns = [
-    path("company/", company_register),
-]
+from hire_center.views.company import CompanyViewSet
+
+router = SimpleRouter()
+router.register(r"companies", CompanyViewSet, basename="company")
+urlpatterns = router.urls

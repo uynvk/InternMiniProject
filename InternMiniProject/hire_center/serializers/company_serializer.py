@@ -1,5 +1,6 @@
-from hire_center.models import Company
 from rest_framework import serializers
+
+from hire_center.models import Company
 
 
 class CompanySerializer(serializers.ModelSerializer):

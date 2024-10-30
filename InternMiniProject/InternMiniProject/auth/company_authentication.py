@@ -1,9 +1,8 @@
-from rest_framework.exceptions import AuthenticationFailed, NotFound
-
-from hire_center.models import Company
 from rest_framework.authentication import BaseAuthentication
+from rest_framework.exceptions import AuthenticationFailed
 
-from InternMiniProject.auth.jwt_token import decode
+from InternMiniProject.auth.jwt_token import JWTToken
+from hire_center.models import Company
 
 
 class CompanyAuthentication(BaseAuthentication):
@@ -14,15 +13,10 @@ class CompanyAuthentication(BaseAuthentication):
             return (None, None)
 
         try:
-            payload = decode(token)
+            company_id = JWTToken.decode_no_secret(token)["id"]
+            company = Company.objects.get(pk=company_id)
+            JWTToken.decode(company.secret_key, token)
         except Exception:
-            raise AuthenticationFailed()
-
-        try:
-            company = Company.objects.get(pk=payload["id"], token=token)
-        except Company.DoesNotExist:
-            raise NotFound("Company not found")
-
-        company_id = company.id
+            raise AuthenticationFailed("Invalid token")
 
         return (company_id, None)

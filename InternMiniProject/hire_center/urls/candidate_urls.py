@@ -1,7 +1,7 @@
-from django.urls import path
-from hire_center.views.candidate import candidate_detail, candidate_list
+from rest_framework.routers import SimpleRouter
 
-urlpatterns = [
-    path("candidates/", candidate_list),
-    path("candidates/<int:pk>/", candidate_detail),
-]
+from hire_center.views.candidate import CandidateViewSet
+
+router = SimpleRouter()
+router.register(r"candidates", CandidateViewSet, basename="candidate")
+urlpatterns = router.urls
