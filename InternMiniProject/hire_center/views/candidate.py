@@ -21,7 +21,9 @@ class CandidateViewSet(viewsets.ViewSet):
         return paginator.get_paginated_response(serializer.data)
 
     def create(self, request):
-        serializer = CandidateService.create(data=request.data, company_id=request.user)
+        serializer = CandidateService.create(
+            data=request.data, company_id=request.user, company_auth=request.auth
+        )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def retrieve(self, request, pk: int):

@@ -19,4 +19,4 @@ class CompanyAuthentication(BaseAuthentication):
         except Exception:
             raise AuthenticationFailed("Invalid token")
 
-        return (company_id, None)
+        return (company_id, token)

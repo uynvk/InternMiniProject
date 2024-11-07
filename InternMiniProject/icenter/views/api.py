@@ -1,4 +1,5 @@
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from InternMiniProject.auth.auth_company_permission import IsAuthenticatedCompany
@@ -36,5 +37,13 @@ class ApiViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_200_OK)
 
     # call api
+    @action(
+        methods=["GET", "POST", "PUT", "PATCH", "DELETE"],
+        detail=False,
+        url_path=r"integration/(?P<code>\w+)",
+    )
     def integration(self, request, code):
-        pass
+        resp = ApiService.integration(
+            code=code, request=request, company_id=request.user
+        )
+        return Response(resp, status=resp.status_code)

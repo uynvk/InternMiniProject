@@ -1,10 +1,18 @@
+import requests
+
 from django.db import transaction, IntegrityError
 from rest_framework.exceptions import NotFound
 
 from InternMiniProject.exceptions.common.duplicate_object_error import (
     DuplicateObjectError,
 )
+from InternMiniProject.utils.json_processor import JsonProcessor
 from icenter.models import Api
+from icenter.serializers import ApiVersionSerializer, VersionDetailSerializer
+from icenter.serializers.api_detail_list_item_serializer import (
+    ApiDetailListItemSerializer,
+    ApiVersionDetailSerializer,
+)
 from icenter.services.api_version_service import ApiVersionService
 
 
@@ -29,3 +37,44 @@ class ApiService:
             return Api.objects.get(pk=pk, company_id=company_id)
         except Api.DoesNotExist:
             raise NotFound("Api not found")
+
+    @classmethod
+    def integration(cls, code, request, company_id):
+        try:
+            api = Api.objects.get(code=code, company_id=company_id)
+        except Api.DoesNotExist:
+            raise NotFound("Api not found")
+        version_details = api.version.version.details
+        serializer = ApiVersionDetailSerializer(version_details, many=True)
+
+        endpoint = "???"
+        method = request.method
+        header = request.headers
+        param = request.query_params
+        init_body = request.data
+
+        processor = JsonProcessor()
+        processor.flatten(init_body)
+
+        for detail in serializer.data:
+            if detail["init_key"] == detail["map_key"]:
+                continue
+            match detail["component"]:
+                case "endpoint":
+                    endpoint = detail["map_key"]
+                case "method":
+                    method = detail["map_key"]
+                case "header":
+                    header[detail["map_key"]] = header[detail["init_key"]]
+                    del header[detail["init_key"]]
+                case "param":
+                    param[detail["map_key"]] = param[detail["init_key"]]
+                    del param[detail["init_key"]]
+                case "body":
+                    processor.replace(detail["init_key"], detail["map_key"])
+
+        body = processor.get_json()
+
+        return requests.request(
+            url=endpoint, method=method, headers=header, params=param, json=body
+        )
