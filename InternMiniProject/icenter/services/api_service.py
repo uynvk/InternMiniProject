@@ -1,7 +1,7 @@
 import requests
 
 from django.db import transaction, IntegrityError
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, ValidationError
 
 from InternMiniProject.exceptions.common.duplicate_object_error import (
     DuplicateObjectError,
@@ -47,7 +47,7 @@ class ApiService:
         version_details = api.version.version.details
         serializer = ApiVersionDetailSerializer(version_details, many=True)
 
-        endpoint = "???"
+        endpoint = "abc"
         method = request.method
         header = request.headers
         param = request.query_params
@@ -56,22 +56,25 @@ class ApiService:
         processor = JsonProcessor()
         processor.flatten(init_body)
 
-        for detail in serializer.data:
-            if detail["init_key"] == detail["map_key"]:
-                continue
-            match detail["component"]:
-                case "endpoint":
-                    endpoint = detail["map_key"]
-                case "method":
-                    method = detail["map_key"]
-                case "header":
-                    header[detail["map_key"]] = header[detail["init_key"]]
-                    del header[detail["init_key"]]
-                case "param":
-                    param[detail["map_key"]] = param[detail["init_key"]]
-                    del param[detail["init_key"]]
-                case "body":
-                    processor.replace(detail["init_key"], detail["map_key"])
+        try:
+            for detail in serializer.data:
+                if detail["init_key"] == detail["map_key"]:
+                    continue
+                match detail["component"]:
+                    case "endpoint":
+                        endpoint = detail["map_key"]
+                    case "method":
+                        method = detail["map_key"]
+                    case "header":
+                        header[detail["map_key"]] = header[detail["init_key"]]
+                        del header[detail["init_key"]]
+                    case "param":
+                        param[detail["map_key"]] = param[detail["init_key"]]
+                        del param[detail["init_key"]]
+                    case "body":
+                        processor.replace(detail["init_key"], detail["map_key"])
+        except Exception:
+            raise ValidationError("Integration mapping error")
 
         body = processor.get_json()
 
