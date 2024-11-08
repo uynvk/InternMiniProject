@@ -15,7 +15,7 @@ class ApiVersionViewSet(viewsets.ViewSet):
     authentication_classes = [CompanyAuthentication]
     permission_classes = [IsAuthenticatedCompany]
 
-    def list(self, request, api_pk: int):
+    def list(self, request, api_pk):
         api = ApiService.read(pk=api_pk, company_id=request.user)
         paginator = CursorPaginationSmall()
         paginated_queryset = paginator.paginate_queryset(
@@ -24,12 +24,12 @@ class ApiVersionViewSet(viewsets.ViewSet):
         serializer = ApiDetailListItemSerializer(paginated_queryset, many=True)
         return paginator.get_paginated_response(serializer.data)
 
-    def create(self, request, api_pk: int):
+    def create(self, request, api_pk):
         api = ApiService.read(pk=api_pk, company_id=request.user)
         ApiVersionService.create(details=request.data["details"], api=api)
         return Response(status=status.HTTP_201_CREATED)
 
-    def retrieve(self, request, pk: int, api_pk: int):
+    def retrieve(self, request, pk, api_pk):
         api = ApiService.read(pk=api_pk, company_id=request.user)
         version = ApiVersionService.read(pk=pk, api=api)
         serializer = ApiDetailListItemSerializer(version)

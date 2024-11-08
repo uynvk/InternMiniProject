@@ -10,6 +10,9 @@ class JsonProcessor:
             # need validate k contain "."
             self.flatten(v, prefix + "." + k)
 
+    def contains(self, key):
+        return key in self.data
+
     def replace(self, init_key, map_key):
         self.data[map_key] = self.data[init_key]
         del self.data[init_key]

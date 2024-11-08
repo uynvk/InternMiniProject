@@ -26,18 +26,18 @@ class CandidateViewSet(viewsets.ViewSet):
         )
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    def retrieve(self, request, pk: int):
+    def retrieve(self, request, pk):
         serializer = CandidateSerializer(
             CandidateService.read(pk=pk, company_id=request.user)
         )
         return Response(serializer.data)
 
-    def update(self, request, pk: int):
+    def update(self, request, pk):
         serializer = CandidateService.update(
             pk=pk, data=request.data, company_id=request.user
         )
         return Response(serializer.data)
 
-    def destroy(self, request, pk: int):
+    def destroy(self, request, pk):
         CandidateService.delete(pk=pk, company_id=request.user)
         return Response(status=status.HTTP_204_NO_CONTENT)

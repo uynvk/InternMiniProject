@@ -30,9 +30,9 @@ class ApiViewSet(viewsets.ViewSet):
         return Response(status=status.HTTP_201_CREATED)
 
     # change active version
-    def partial_update(self, request, pk: int):
+    def partial_update(self, request, pk):
         api = ApiService.read(pk=pk, company_id=request.user)
-        version = ApiVersionService.read(pk=int(request.data["version"]), api=api)
+        version = ApiVersionService.read(pk=request.data["version"], api=api)
         ApiVersionService.set_active_version(version, api)
         return Response(status=status.HTTP_200_OK)
 
