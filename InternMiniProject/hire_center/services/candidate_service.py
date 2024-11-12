@@ -2,7 +2,7 @@ import os
 
 import requests
 from dotenv import load_dotenv
-from rest_framework.exceptions import NotFound
+from rest_framework.exceptions import NotFound, ValidationError
 
 from hire_center.models import Candidate
 from hire_center.serializers import CandidateSerializer
@@ -38,6 +38,8 @@ class CandidateService:
             return Candidate.objects.get(pk=pk, company_id=company_id)
         except Candidate.DoesNotExist:
             raise NotFound("Candidate not found")
+        except ValueError:
+            raise ValidationError("Invalid candidate lookup")
 
     @classmethod
     def update(cls, pk, data, company_id):

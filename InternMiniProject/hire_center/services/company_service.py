@@ -34,3 +34,5 @@ class CompanyService:
             return Company.objects.get(pk=company_id)
         except Company.DoesNotExist:
             raise NotFound("Company not found")
+        except ValueError:
+            raise NotFound("Invalid company lookup")

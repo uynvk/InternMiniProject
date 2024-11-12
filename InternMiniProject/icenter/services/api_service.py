@@ -34,6 +34,8 @@ class ApiService:
             return Api.objects.get(pk=pk, company_id=company_id)
         except Api.DoesNotExist:
             raise NotFound("Api not found")
+        except ValueError:
+            raise ValidationError("Invalid API lookup")
 
     @classmethod
     def integration(cls, code, request, company_id):

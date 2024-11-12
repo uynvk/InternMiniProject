@@ -18,6 +18,7 @@ class JWTToken:
 
     @classmethod
     def encode(cls, secret_key, payload):
+        # don't need salt because exp will be different each time already..
         payload["exp"] = datetime.utcnow() + timedelta(seconds=int(cls.exp))
         return jwt.encode(payload, secret_key, algorithm=cls.algo)
 

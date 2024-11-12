@@ -2,7 +2,7 @@ from rest_framework.authentication import BaseAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 
 from InternMiniProject.auth.jwt_token import JWTToken
-from hire_center.models import Company
+from hire_center.services.company_service import CompanyService
 
 
 class CompanyAuthentication(BaseAuthentication):
@@ -14,7 +14,7 @@ class CompanyAuthentication(BaseAuthentication):
 
         try:
             company_id = JWTToken.decode_no_secret(token)["id"]
-            company = Company.objects.get(pk=company_id)
+            company = CompanyService.read(company_id)
             JWTToken.decode(company.secret_key, token)
         except Exception:
             raise AuthenticationFailed("Invalid token")

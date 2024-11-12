@@ -37,3 +37,5 @@ class ApiVersionService:
             return ApiVersion.objects.get(pk=pk, api=api)
         except ApiVersion.DoesNotExist:
             raise NotFound("API version not found")
+        except ValueError:
+            raise NotFound("Invalid API version lookup")
