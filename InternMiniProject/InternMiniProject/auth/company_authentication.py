@@ -10,7 +10,7 @@ class CompanyAuthentication(BaseAuthentication):
         token = request.headers.get("Authorization")
 
         if token is None:
-            return (None, None)
+            return None, None
 
         try:
             company_id = JWTToken.decode_no_secret(token)["id"]
@@ -19,4 +19,4 @@ class CompanyAuthentication(BaseAuthentication):
         except Exception:
             raise AuthenticationFailed("Invalid token")
 
-        return (company_id, token)
+        return company_id, token

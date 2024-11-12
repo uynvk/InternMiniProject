@@ -22,10 +22,13 @@
 1. Pre-setup:
     1. Run `git clone https://github.com/uynvk/InternMiniProject.git`
     2. Install all required libs in project.
+    3. Create file `.env` at `./InternMiniProject`
 2. Set up database:
     1. Move to `./InternMiniProject`
     2. Modify DB variables in `.env` file
     3. Run `sudo docker compose up`
+    4. Run `python manage.py migrate hire_center`
+    5. Run `python manage.py migrate icenter`
 3. Set up slack: Modify SLACK_WEBHOOK_URL in `.env` file
 4. Set up JWT: Modify JWT variables in `.env` file
 5. Run server

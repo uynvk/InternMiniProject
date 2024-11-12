@@ -11,7 +11,6 @@ class ApiVersionService:
     @classmethod
     def set_active_version(cls, version, api):
         with transaction.atomic():
-            # need select for update if api or version can change
             ApiActiveVersion.objects.filter(api=api).delete()
             ApiActiveVersion.objects.create(api=api, version=version)
 
@@ -24,7 +23,6 @@ class ApiVersionService:
         with transaction.atomic():
             version = ApiVersion.objects.create(api=api)
             for version_detail in details:
-                # validate data..
                 version_detail["version"] = version.id
                 version_serializer = VersionDetailSerializer(data=version_detail)
                 version_serializer.is_valid(raise_exception=True)
